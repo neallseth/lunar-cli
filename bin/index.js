@@ -15,6 +15,12 @@ program.parse();
 
 console.log(program.opts());
 
+if (program.opts().full) {
+  console.log("show next full moon");
+} else {
+  pullMoonData(program.opts().date);
+}
+
 // const moonVisual = {
 //   "New Moon": `    _..._
 //   .:::::::.
@@ -75,8 +81,10 @@ console.log(program.opts());
 // `,
 // };
 
-async function pullMoonData(type = "today") {
-  const res = await fetch(`https://www.moongiant.com/phase/${type}/`);
+async function pullMoonData(date) {
+  const res = await fetch(
+    `https://www.moongiant.com/phase/${date ?? "today"}/`
+  );
   const html = await res.text();
 
   const root = parse(html);
@@ -88,14 +96,14 @@ async function pullMoonData(type = "today") {
     .filter((detail) => detail)
     .map((detail) => detail.split(": "));
 
-  const date = new Date();
+  const dateObj = date ? new Date(date) : new Date();
   const options = {
     weekday: "long",
     year: "numeric",
     month: "long",
     day: "numeric",
   };
-  console.log(chalk.white.bold(date.toLocaleDateString("en-US", options)));
+  console.log(chalk.white.bold(dateObj.toLocaleDateString("en-US", options)));
   console.log(moonPhaseArt[moonDetails[0][1]]);
 
   console.log(chalk.blue.bold(`Details`));
@@ -107,5 +115,3 @@ async function pullMoonData(type = "today") {
 
   console.log(table([[summary]], summaryTableConfig));
 }
-
-// pullMoonData();
