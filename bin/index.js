@@ -10,78 +10,15 @@ const program = new Command();
 program.name("moon-cli").description("Moon phase & status CLI application");
 program.option("-d, --date <date>");
 program.option("-f, --full");
-
 program.parse();
 
-console.log(program.opts());
-
 if (program.opts().full) {
-  console.log("show next full moon");
+  getFullMoon();
 } else {
-  pullMoonData(program.opts().date);
+  getMoonByDate(program.opts().date);
 }
 
-// const moonVisual = {
-//   "New Moon": `    _..._
-//   .:::::::.
-//  :::::::::::   NEW  MOON
-//  :::::::::::
-//  \`:::::::::'
-//    \`':::''
-// `,
-//   "Waxing Crescent": `    _..._
-//   .::::. \`.
-//  :::::::.  :    WAXING CRESCENT
-//  ::::::::  :
-//  \`::::::' .'
-//    \`'::'-'
-// `,
-//   "First Quarter": `    _..._
-//   .::::  \`.
-//  ::::::    :    FIRST QUARTER
-//  ::::::    :
-//  \`:::::   .'
-//    \`'::.-'
-// `,
-//   "Waxing Gibbous": `    _..._
-//   .::'   \`.
-//  :::       :    WAXING GIBBOUS
-//  :::       :
-//  \`::.     .'
-//    \`':..-'
-
-// `,
-//   "Full Moon": `    _..._
-//   .'     \`.
-//  :         :    FULL MOON
-//  :         :
-//  \`.       .'
-//    \`-...-'
-// `,
-//   "Waning Gibbous": `    _..._
-//   .'   \`::.
-//  :       :::    WANING GIBBOUS
-//  :       :::
-//  \`.     .::'
-//    \`-..:''
-// `,
-//   "Last Quarter": `    _..._
-//   .'  ::::.
-//  :    ::::::    LAST QUARTER
-//  :    ::::::
-//  \`.   :::::'
-//    \`-.::''
-// `,
-//   "Waning Crescent": `   _..._
-//  .' .::::.
-// :  ::::::::    WANING CRESCENT
-// :  ::::::::
-// \`. '::::::'
-//   \`-.::''
-// `,
-// };
-
-async function pullMoonData(date) {
+async function getMoonByDate(date) {
   const res = await fetch(
     `https://www.moongiant.com/phase/${date ?? "today"}/`
   );
@@ -114,4 +51,17 @@ async function pullMoonData(date) {
   };
 
   console.log(table([[summary]], summaryTableConfig));
+}
+
+async function getFullMoon() {
+  const res = await fetch(`https://www.moongiant.com/`);
+  const html = await res.text();
+
+  const root = parse(html);
+  const fullMoonDate =
+    root.querySelector(".nextCopy > h2").firstChild.innerText;
+
+  console.log(moonPhaseArt["Full Moon"]);
+  console.log(chalk.blue.bold(`Next coming full moon will be:\n`));
+  console.log(chalk.white.bold(fullMoonDate));
 }
