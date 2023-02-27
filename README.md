@@ -4,7 +4,7 @@ Simple CLI app for lunar data. Displays phase, illumination, distance, and more.
 
 ## Installation
 
-On all platforms, intall globally with `npm i -g lunar-cli`
+On all platforms, install globally with `npm i -g lunar-cli`
 
 Similarly, you can uninstall with `npm uninstall -g lunar-cli`, or view all globally installed NPM packages with `npm list -g`
 
